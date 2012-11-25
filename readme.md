@@ -38,3 +38,9 @@ And reboot.
 ## Test build
 
 Clone this repo and set `STELLARIS_DIR` in the makefile to the download location of stellarisware, then run `make program`.
+
+## More info
+http://recursive-labs.com/blog/2012/10/28/stellaris-launchpad-gnu-linux-getting-started/
+http://processors.wiki.ti.com/index.php/Stellaris_LaunchPad
+https://github.com/esden/summon-arm-toolchain
+https://github.com/utzig/lm4tools
