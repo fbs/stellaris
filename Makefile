@@ -19,14 +19,14 @@ OBJS	 	= $(C_SRC:.c=.o)
 .PHONY: all clean
 all: bin
 
+bin: build
+	$(OBJCPY) -O binary $(NAME) $(BIN)
+
 build: $(OBJS)
 	$(LD) -o $(NAME) $(LDFLAGS) $(OBJS)
 
 clean:
-	rm -f $(OBJS) $(NAME) $(BIN)
-
-bin: build
-	$(OBJCPY) -O binary $(NAME) $(BIN)
+	rm -f $(OBJS) $(NAME) $(BIN) *.d
 
 program: bin
 	$(FLASH) $(BIN)
