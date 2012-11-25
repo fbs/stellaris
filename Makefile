@@ -7,7 +7,7 @@ FLASH		= lm4flash
 
 STARTUP		= startup_gcc.c
 LINKERSCRIPT	= linker.ld
-STELLARIS_DIR	= /data/build/stellaris/stellaris
+STELLARIS_DIR	= /data/build/stellaris/stellaris-ware
 C_SRC		= $(STARTUP) main.c
 
 INCLUDE		= -I$(STELLARIS_DIR)
@@ -23,7 +23,7 @@ bin: build
 	$(OBJCPY) -O binary $(NAME) $(BIN)
 
 build: $(OBJS)
-	$(LD) -o $(NAME) $(LDFLAGS) $(OBJS)
+	$(LD) -o $(NAME) $(LDFLAGS) $(OBJS) ${STELLARIS_DIR}driverlib/gcc-cm4f/libdriver-cm4f.a
 
 clean:
 	rm -f $(OBJS) $(NAME) $(BIN) *.d
