@@ -7,7 +7,7 @@ FLASH		= lm4flash
 
 STARTUP		= startup_gcc.c
 LINKERSCRIPT	= linker.ld
-STELLARIS_DIR	= /data/build/stellaris/stellaris-ware
+STELLARIS_DIR	= /data/build/stellaris/stellaris-ware/
 C_SRC		= $(STARTUP) main.c
 
 INCLUDE		= -I$(STELLARIS_DIR)
