@@ -30,10 +30,16 @@ make
 ```
 sudo addgroup stellaris
 sudo usermod -aG $USER stellaris
-echo 'ATTRS{idVendor}=="1cbe", ATTRS{idProduct}=="00fd", MODE="0660", GROUP="stellaris"' | sudo tee /etc/udev/rules.d/99-stellaris.rules
+echo 'ATTRS{idVendor}=="1cbe", ATTRS{idProduct}=="00fd", MODE="0660", GROUP="stellaris", SYMLINK+="slaunchpad"' | sudo tee /etc/udev/rules.d/99-stellaris.rules
 ```
 
 And reboot. 
+
+## Rs232 connection script
+```
+printf '#!/bin/bash\n screen /dev/slaunchpad 115200 8N1 -S slaunchpad' | sudo tee /usr/local/bin/stellaris-com\n
+sudo chmod +x /usr/local/bin/stellaris-com
+```
 
 ## Test build
 
