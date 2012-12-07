@@ -32,7 +32,9 @@ MKDIR		= mkdir -p
 # paths
 BUILD_DIR	= build
 SRC_DIR		= src
-VPATH		= $(SW_DIR)/utils
+
+vpath 	%.c	src/
+vpath	%.c	$(SW_DIR)/utils/ 
 
 # Flags
 INCLUDES	= -I$(SW_DIR)
