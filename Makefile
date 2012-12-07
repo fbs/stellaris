@@ -3,10 +3,10 @@ NAME		= test
 
 # Location of source files
 # uartstdio is part of stellaris-ware utils, make uses vpath to find it.
-C_SRC		+= $(wildcard $(SRC_DIR)/*.c)
+C_SRC		+= $(subst $(SRC_DIR)/, , $(wildcard $(SRC_DIR)/*.c))
 C_SRC		+= uartstdio.c
 
-# Compiler tools prefix, if not in path add /x/y/
+# Compiler tools prefix
 PREFIX		= arm-none-eabi
 
 # Path of the used linkerscript
@@ -74,9 +74,9 @@ OBJS		= $(C_SRC:.c=.o)
 
 # Library locations
 LIBS		+= $(SW_DIR)/driverlib/gcc-cm4f/libdriver-cm4f.a
-LIBS		+= ${shell ${CC} ${CFLAGS} -print-libgcc-file-name}
-LIBS		+= ${shell ${CC} ${CFLAGS} -print-file-name=libc.a}
-LIBS		+= ${shell ${CC} ${CFLAGS} -print-file-name=libm.a}
+LIBS		+= $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
+LIBS		+= $(shell $(CC) $(CFLAGS) -print-file-name=libc.a)
+LIBS		+= $(shell $(CC) $(CFLAGS) -print-file-name=libm.a)
 
 .PHONY: all clean
 all: clean dir bin size
@@ -85,10 +85,10 @@ bin: build
 	$(OBJCPY) -O binary $(ELF) $(BIN)
 
 build: $(OBJS)
-	$(LD) -o $(ELF) $(LDFLAGS) $(OBJS) $(LIBS)
+	$(LD) -o $(ELF) $(LDFLAGS) $(addprefix $(BUILD_DIR)/,$(OBJS)) $(LIBS)
 
 clean:
-	$(RM) $(OBJS) $(ELF) $(BIN) src/*.d build/*
+	$(RM) $(OBJS) $(ELF) $(BIN) src/*.d $(BUILD_DIR)/*
 
 dir:
 	$(MKDIR) $(BUILD_DIR)
@@ -99,5 +99,7 @@ flash: bin
 size: bin
 	$(SIZE) $(ELF)
 
+# Compile 
 .c.o:
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $(BUILD_DIR)/$@
+
