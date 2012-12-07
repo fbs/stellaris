@@ -79,7 +79,7 @@ LIBS		+= $(shell $(CC) $(CFLAGS) -print-file-name=libc.a)
 LIBS		+= $(shell $(CC) $(CFLAGS) -print-file-name=libm.a)
 
 .PHONY: all clean
-all: clean dir bin size
+all: dir bin size
 
 bin: build
 	$(OBJCPY) -O binary $(ELF) $(BIN)
