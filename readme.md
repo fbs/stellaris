@@ -45,6 +45,11 @@ sudo chmod +x /usr/local/bin/stellaris-com
 
 Clone this repo and set `SW_DIR` in the makefile to the installation location of stellarisware, then run `make flash`.
 
+## Using this template to create a new project
+```
+./new-project.sh dest_dir
+```
+
 ## More info
 http://recursive-labs.com/blog/2012/10/28/stellaris-launchpad-gnu-linux-getting-started/
 
