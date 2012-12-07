@@ -2,7 +2,9 @@
 NAME		= test
 
 # Location of source files
-C_SRC		= $(wildcard $(SRC_DIR)/*.c)
+# uartstdio is part of stellaris-ware utils, make uses vpath to find it.
+C_SRC		+= $(wildcard $(SRC_DIR)/*.c)
+C_SRC		+= uartstdio.c
 
 # Compiler tools prefix, if not in path add /x/y/
 PREFIX		= arm-none-eabi
@@ -12,7 +14,6 @@ LDSCRIPT	= linker.ld
 
 # Location of the stellaris-ware directory
 SW_DIR		= /data/build/stellaris/stellaris-ware
-
 
 #################### DONT MODIFY ######################
 #files
