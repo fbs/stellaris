@@ -1,35 +1,82 @@
 NAME		= test
-BIN		= $(NAME).bin
-CC		= arm-none-eabi-gcc
-LD  		= arm-none-eabi-ld
-OBJCPY		= arm-none-eabi-objcopy
+
+#files
+BIN		= $(BUILD_DIR)/$(NAME).bin
+ELF		= $(BUILD_DIR)/$(NAME).elf
+MAP		= $(BUILD_DIR)/$(NAME).map
+
+# tools
+PREFIX		= arm-none-eabi
+
+CC		= $(PREFIX)-gcc
+LD  		= $(PREFIX)-ld
+OBJCPY		= $(PREFIX)-objcopy
 FLASH		= lm4flash
+RM		= rm -rf
+MKDIR		= mkdir -p
 
-STARTUP		= startup_gcc.c
-LINKERSCRIPT	= linker.ld
-STELLARIS_DIR	= /data/build/stellaris/stellaris-ware/
-C_SRC		= $(STARTUP) main.c
+# needed scripts
+LDSCRIPT	= linker.ld
 
-INCLUDE		= -I$(STELLARIS_DIR)
-DEBUGFLAGS	= -g
-CFLAGS		= $(DEBUGFLAGS) -mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=softfp -Os -ffunction-sections -fdata-sections -MD -std=c99 -Wall -pedantic -DPART_LM4F120H5QR -DTARGET_IS_BLIZZARD_RA1
-LDFLAGS		= -T $(LINKERSCRIPT) --entry ResetISR --gc-sections
-OBJS	 	= $(C_SRC:.c=.o)
+# paths
+SW_DIR		= /data/build/stellaris/stellaris-ware/
+BUILD_DIR		= build/
+SRC_DIR		= src/
+
+# Flags
+INCLUDES	= -I$(SW_DIR)
+DEBUGFLAGS	= -g -D DEBUG
+
+CFLAGS		+= $(DEBUGFLAGS) 
+CFLAGS		+= -mthumb 
+CFLAGS		+= -mcpu=cortex-m4 
+CFLAGS		+= -mfpu=fpv4-sp-d16 
+CFLAGS		+= -mfloat-abi=softfp 
+CFLAGS		+= -Os 
+CFLAGS		+= -ffunction-sections 
+CFLAGS		+= -fdata-sections 
+CFLAGS		+= -MD 
+CFLAGS		+= -std=c99 
+CFLAGS		+= -Wall 
+CFLAGS		+= -pedantic 
+CFLAGS		+= -DPART_LM4F120H5QR 
+CFLAGS		+= -DTARGET_IS_BLIZZARD_RA1
+CFLAGS		+= $(INCLUDES)
+
+LDFLAGS		+= -T $(LDSCRIPT) 
+LDFLAGS		+= --entry ResetISR 
+LDFLAGS		+= --gc-sections
+LDFLAGS		+= -Map $(MAP)
+LDFLAGS		+= -nostdlib
+
+C_SRC		= $(wildcard src/*.c)
+OBJS		= $(C_SRC:.c=.o)
+
+LIBS		+= $(SW_DIR)/driverlib/gcc-cm4f/libdriver-cm4f.a
+LIBS		+= ${shell ${CC} ${CFLAGS} -print-libgcc-file-name}
+LIBS		+= ${shell ${CC} ${CFLAGS} -print-file-name=libc.a}
+LIBS		+= ${shell ${CC} ${CFLAGS} -print-file-name=libm.a}
 
 .PHONY: all clean
-all: bin
+all: dir bin
 
 bin: build
-	$(OBJCPY) -O binary $(NAME) $(BIN)
+	$(OBJCPY) -O binary $(ELF) $(BIN)
 
 build: $(OBJS)
-	$(LD) -o $(NAME) $(LDFLAGS) $(OBJS) ${STELLARIS_DIR}driverlib/gcc-cm4f/libdriver-cm4f.a
+	$(LD) -o $(ELF) $(LDFLAGS) $(OBJS) $(LIBS)
 
 clean:
-	rm -f $(OBJS) $(NAME) $(BIN) *.d
+	$(RM) $(OBJS) $(ELF) $(BIN) src/*.d
+
+dir:
+	$(MKDIR) $(BUILD_DIR)
 
 program: bin
 	$(FLASH) $(BIN)
 
 .c.o:
-	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
+
+list: 
+	echo $(C_SRC)
