@@ -30,7 +30,7 @@ make
 ```
 sudo addgroup stellaris
 sudo usermod -aG $USER stellaris
-echo 'ATTRS{idVendor}=="1cbe", ATTRS{idProduct}=="00fd", MODE="0664", GROUP="stellaris"' | sudo tee /etc/udev/rules.d/45-stellaris.rules
+echo 'ATTRS{idVendor}=="1cbe", ATTRS{idProduct}=="00fd", MODE="0660", GROUP="stellaris"' | sudo tee /etc/udev/rules.d/99-stellaris.rules
 ```
 
 And reboot. 
