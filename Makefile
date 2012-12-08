@@ -46,13 +46,16 @@ CC		= $(PREFIX)-gcc
 LD  		= $(PREFIX)-ld
 OBJCPY		= $(PREFIX)-objcopy
 SIZE		= $(PREFIX)-size
+GDB		= $(PREFIX)-gdb
 FLASH		= lm4flash
 RM		= rm -rf
 MKDIR		= mkdir -p
 
-# paths
-BUILD_DIR	= build
+# Debugger stuff
+DEBUG_SCRIPT	= debug/start_debugger.sh
+GDB_INIT	= debug/gdb_init.gdb
 
+# paths
 vpath 	%.c	src/
 vpath	%.c	$(SW_DIR)/utils/ 
 
@@ -66,9 +69,6 @@ AFLAGS		+= -mfpu=$(FPU)
 AFLAGS		+= -MD
 
 # C FLAGS
-ifeq ($(DEBUG), true)
-	CFLAGS		+= $(DEBUGFLAGS) 
-endif
 CFLAGS		+= -mthumb 
 CFLAGS		+= -mcpu=$(CPU) 
 CFLAGS		+= -mfpu=$(FPU) 
@@ -104,18 +104,22 @@ LIBS		+= $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
 LIBS		+= $(shell $(CC) $(CFLAGS) -print-file-name=libc.a)
 LIBS		+= $(shell $(CC) $(CFLAGS) -print-file-name=libm.a)
 
-.PHONY: all clean
+.PHONY: all clean release
 
 all: dir bin size
 
-bin: build
+bin: elf
 	$(OBJCPY) -O binary $(ELF) $(BIN)
 
-build: $(OBJS)
+elf: $(OBJS) dir
 	$(LD) -o $(ELF) $(LDFLAGS) $(OBJS) $(LIBS)
 
 clean:
 	$(RM) $(OBJS) $(C_DEPS) $(BUILD_DIR)
+
+debug: CFLAGS += $(DEBUGFLAGS)
+debug: elf
+	@sh -c "$(DEBUG_SCRIPT) $(GDB) $(GDB_INIT) $(ELF)"
 
 dir:
 	$(MKDIR) $(BUILD_DIR)
