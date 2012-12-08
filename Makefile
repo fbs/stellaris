@@ -4,7 +4,10 @@ NAME		= test
 # Location of source files
 # uartstdio is part of stellaris-ware utils, make uses vpath to find it.
 C_SRC		+= $(wildcard *.c)
-C_SRC		+= uartstdio.c
+#C_SRC		+= uartstdio.c
+
+# Optional ASM files
+ASM_SRC		+= $(wildcard *.S)
 
 # Compiler tools prefix
 PREFIX		= arm-none-eabi
@@ -45,6 +48,11 @@ vpath	%.c	$(SW_DIR)/utils/
 INCLUDES	= -I$(SW_DIR)
 DEBUGFLAGS	= -g #-D DEBUG
 
+AFLAGS		+= -mthumb
+AFLAGS		+= -mcpu=$(CPU)
+AFLAGS		+= -mfpu=$(FPU)
+AFLAGS		+= -MD
+
 # C FLAGS
 ifeq ($(DEBUG), true)
 	CFLAGS		+= $(DEBUGFLAGS) 
@@ -74,8 +82,9 @@ ifeq ($(MAKE_MAP), true)
 endif
 
 # Object files
-C_OBJS		= $(C_SRC:.c=.o)
-C_DEPS		= $(wildcard *.d)
+OBJS		=  $(C_SRC:.c=.o)  
+OBJS		+= $(ASM_SRC:.S=.o)
+C_DEPS		=  $(wildcard *.d)
 
 # Library locations
 LIBS		+= $(SW_DIR)/driverlib/gcc-cm4f/libdriver-cm4f.a
@@ -84,16 +93,17 @@ LIBS		+= $(shell $(CC) $(CFLAGS) -print-file-name=libc.a)
 LIBS		+= $(shell $(CC) $(CFLAGS) -print-file-name=libm.a)
 
 .PHONY: all clean
+
 all: dir bin size
 
 bin: build
 	$(OBJCPY) -O binary $(ELF) $(BIN)
 
-build: $(C_OBJS)
-	$(LD) -o $(ELF) $(LDFLAGS) $(C_OBJS) $(LIBS)
+build: $(OBJS)
+	$(LD) -o $(ELF) $(LDFLAGS) $(OBJS) $(LIBS)
 
 clean:
-	$(RM) $(C_OBJS) $(C_DEPS) $(BUILD_DIR)
+	$(RM) $(OBJS) $(C_DEPS) $(BUILD_DIR)
 
 dir:
 	$(MKDIR) $(BUILD_DIR)
@@ -107,5 +117,8 @@ size: bin
 # Compile 
 .c.o:
 	$(CC) $(CFLAGS) -c $< -o $@
+
+.S.o:
+	$(CC) $(AFLAGS) -c $< -o $@
 
 -include $(C_DEPS)
