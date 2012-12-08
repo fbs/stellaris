@@ -1,6 +1,6 @@
 //*****************************************************************************
 //
-// blinky.c - Simple example to blink the on-board LED.
+// project0.c - Example to demonstrate minimal StellarisWare setup
 //
 // Copyright (c) 2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
@@ -22,57 +22,81 @@
 //
 //*****************************************************************************
 
-#include "inc/lm4f120h5qr.h"
+#include "inc/hw_types.h"
+#include "inc/hw_memmap.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/gpio.h"
 
+//*****************************************************************************
+//
+// Define pin to LED color mapping.
+//
+//*****************************************************************************
+
+#define RED_LED   GPIO_PIN_1
+#define BLUE_LED  GPIO_PIN_2
+#define GREEN_LED GPIO_PIN_3
+
+//*****************************************************************************
+//
+//! \addtogroup example_list
+//! <h1>Project Zero (project0)</h1>
+//!
+//! This example demonstrates the use of StellarisWare to setup the clocks
+//! and toggle GPIO pins to make the LED's blink. This is a good place to 
+//! start understanding your launchpad and the tools that can be used to 
+//! program it. See http://www.ti.com/stellaris-launchpad/project0 for more 
+//! information and tutorial videos.
+//!
+//
+//*****************************************************************************
+
+
+//*****************************************************************************
+//
+// Main 'C' Language entry point.  Toggle an LED using StellarisWare.
+// See www.ti.com/stellaris-launchpad/project0 for more information and 
+// tutorial videos.
+//
+//*****************************************************************************
 int
 main(void)
 {
-    volatile unsigned long ulLoop;
+    //
+    // Setup the system clock to run at 50 Mhz from PLL with crystal reference
+    //
+    SysCtlClockSet(SYSCTL_SYSDIV_4|SYSCTL_USE_PLL|SYSCTL_XTAL_16MHZ|
+                    SYSCTL_OSC_MAIN);
 
     //
-    // Enable the GPIO port that is used for the on-board LED.
+    // Enable and configure the GPIO port for the LED operation.
     //
-    SYSCTL_RCGC2_R = SYSCTL_RCGC2_GPIOF;
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED);
 
     //
-    // Do a dummy read to insert a few cycles after enabling the peripheral.
-    //
-    ulLoop = SYSCTL_RCGC2_R;
-
-    //
-    // Enable the GPIO pin for the LED (PF3).  Set the direction as output, and
-    // enable the GPIO pin for digital function.
-    //
-    GPIO_PORTF_DIR_R = 0x08;
-    GPIO_PORTF_DEN_R = 0x08;
-
-    //
-    // Loop forever.
+    // Loop Forever
     //
     while(1)
     {
         //
-        // Turn on the LED.
+        // Turn on the LED
         //
-        GPIO_PORTF_DATA_R |= 0x08;
+        GPIOPinWrite(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED, RED_LED);
 
         //
-        // Delay for a bit.
+        // Delay for a bit
         //
-        for(ulLoop = 0; ulLoop < 200000; ulLoop++)
-        {
-        }
+        SysCtlDelay(2000000);
 
         //
-        // Turn off the LED.
+        // Turn on the LED
         //
-        GPIO_PORTF_DATA_R &= ~(0x08);
+        GPIOPinWrite(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED, BLUE_LED);
 
         //
-        // Delay for a bit.
+        // Delay for a bit
         //
-        for(ulLoop = 0; ulLoop < 200000; ulLoop++)
-        {
-        }
+        SysCtlDelay(2000000);
     }
 }
