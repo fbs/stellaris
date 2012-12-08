@@ -3,7 +3,7 @@ NAME		= test
 
 # Location of source files
 # uartstdio is part of stellaris-ware utils, make uses vpath to find it.
-C_SRC		+= $(subst $(SRC_DIR)/, , $(wildcard $(SRC_DIR)/*.c))
+C_SRC		+= $(wildcard *.c)
 C_SRC		+= uartstdio.c
 
 # Compiler tools prefix
@@ -37,7 +37,6 @@ MKDIR		= mkdir -p
 
 # paths
 BUILD_DIR	= build
-SRC_DIR		= src
 
 vpath 	%.c	src/
 vpath	%.c	$(SW_DIR)/utils/ 
@@ -75,7 +74,8 @@ ifeq ($(MAKE_MAP), true)
 endif
 
 # Object files
-OBJS		= $(C_SRC:.c=.o)
+C_OBJS		= $(C_SRC:.c=.o)
+C_DEPS		= $(wildcard *.d)
 
 # Library locations
 LIBS		+= $(SW_DIR)/driverlib/gcc-cm4f/libdriver-cm4f.a
@@ -89,11 +89,11 @@ all: dir bin size
 bin: build
 	$(OBJCPY) -O binary $(ELF) $(BIN)
 
-build: $(OBJS)
-	$(LD) -o $(ELF) $(LDFLAGS) $(addprefix $(BUILD_DIR)/,$(OBJS)) $(LIBS)
+build: $(C_OBJS)
+	$(LD) -o $(ELF) $(LDFLAGS) $(C_OBJS) $(LIBS)
 
 clean:
-	$(RM) $(OBJS) $(ELF) $(BIN) src/*.d $(BUILD_DIR)/*
+	$(RM) $(C_OBJS) $(C_DEPS) $(BUILD_DIR)
 
 dir:
 	$(MKDIR) $(BUILD_DIR)
@@ -106,5 +106,6 @@ size: bin
 
 # Compile 
 .c.o:
-	$(CC) $(CFLAGS) -c $< -o $(BUILD_DIR)/$@
+	$(CC) $(CFLAGS) -c $< -o $@
 
+-include $(C_DEPS)
