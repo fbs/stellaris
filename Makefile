@@ -116,7 +116,7 @@ clean:
 	$(RM) $(OBJS) $(C_DEPS) $(BUILD_DIR)
 
 debug: CFLAGS += $(DEBUGFLAGS)
-debug: elf
+debug: clean elf
 	@sh -c "$(DEBUG_SCRIPT) $(GDB) $(GDB_INIT) $(ELF)"
 
 dir:
