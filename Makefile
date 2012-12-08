@@ -9,6 +9,15 @@ C_SRC		+= $(wildcard *.c)
 # Optional ASM files
 ASM_SRC		+= $(wildcard *.S)
 
+# C flags
+#CFLAGS		+=
+
+# ASM flags
+# AFLAGS	+=
+
+# Linker flags
+# LDFLAGS	+=
+
 # Compiler tools prefix
 PREFIX		= arm-none-eabi
 
