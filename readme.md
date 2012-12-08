@@ -44,6 +44,10 @@ printf '#!/bin/bash\n screen /dev/slaunchpad 115200 8N1 -S slaunchpad' | sudo te
 sudo chmod +x /usr/local/bin/stellaris-com
 ```
 
+# Setup OpenOCD
+
+See [the ti wiki](http://processors.wiki.ti.com/index.php/Stellaris_Launchpad_with_OpenOCD_and_Linux).
+
 ## Test build
 
 Clone this repo and set `SW_DIR` in the makefile to the installation location of stellarisware, then run `make flash`.
