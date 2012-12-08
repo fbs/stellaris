@@ -10,7 +10,7 @@ make
 ```
 
 ## ARM toolchain
-There seems to be some kind of problem with the arm toolchain in SAT. The qs-rgb example work, see [this ti forum topic](http://e2e.ti.com/support/microcontrollers/stellaris_arm_cortex-m3_microcontroller/f/471/t/226958.aspx). The [sourcery toolchain](https://sourcery.mentor.com/GNUToolchain/release2322) from mentor seems to work fine. 
+There seems to be some kind of problem with the arm toolchain in SAT. The qs-rgb example wont work, see [this ti forum topic](http://e2e.ti.com/support/microcontrollers/stellaris_arm_cortex-m3_microcontroller/f/471/t/226958.aspx). The [sourcery toolchain](https://sourcery.mentor.com/GNUToolchain/release2322) from mentor seems to work fine. 
 
 For SAT
 ```
