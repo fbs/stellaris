@@ -89,9 +89,7 @@ LDFLAGS		+= -T $(LDSCRIPT)
 LDFLAGS		+= --entry ResetISR 
 LDFLAGS		+= --gc-sections
 LDFLAGS		+= -nostdlib
-ifeq ($(MAKE_MAP), true)
-	LDFLAGS		+= -Map $(MAP)
-endif
+LDFLAGS		+= -Map $(MAP)
 
 # Object files
 OBJS		=  $(C_SRC:.c=.o)  
