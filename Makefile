@@ -18,6 +18,9 @@ ASM_SRC		+= $(wildcard *.S)
 # Linker flags
 # LDFLAGS	+=
 
+# Directory where the elf/bin gets stored.
+BUILD_DIR	= build
+
 # Compiler tools prefix
 PREFIX		= arm-none-eabi
 
