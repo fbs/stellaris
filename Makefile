@@ -12,6 +12,11 @@ PREFIX		= arm-none-eabi
 # Path of the used linkerscript
 LDSCRIPT	= linker.ld
 
+# Processer variant
+CPU		= cortex-m4
+FPU		= fpv4-sp-d16 -mfloat-abi=softfp
+PART		= LM4F120H5QR
+
 # Location of the stellaris-ware directory
 SW_DIR		= /data/build/stellaris/stellaris-ware
 
@@ -46,8 +51,8 @@ ifeq ($(DEBUG), true)
 	CFLAGS		+= $(DEBUGFLAGS) 
 endif
 CFLAGS		+= -mthumb 
-CFLAGS		+= -mcpu=cortex-m4 
-CFLAGS		+= -mfpu=fpv4-sp-d16 
+CFLAGS		+= -mcpu=$(CPU) 
+CFLAGS		+= -mfpu=$(FPU) 
 CFLAGS		+= -mfloat-abi=softfp 
 CFLAGS		+= -Os 
 CFLAGS		+= -ffunction-sections 
@@ -56,7 +61,7 @@ CFLAGS		+= -MD
 CFLAGS		+= -std=c99 
 CFLAGS		+= -Wall 
 CFLAGS		+= -pedantic 
-CFLAGS		+= -DPART_LM4F120H5QR 
+CFLAGS		+= -DPART_$(PART)
 CFLAGS		+= -DTARGET_IS_BLIZZARD_RA1
 CFLAGS		+= $(INCLUDES)
 
